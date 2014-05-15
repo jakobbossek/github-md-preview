@@ -18,7 +18,6 @@ for root, dirs, files in os.walk("."):
       file_list[route] = os.path.abspath(route)
       print(os.path.abspath(file))
 
-
 # def replace_codeblock(codeblock):
 #   #print(codeblock.group(0))
 #   codeblock = codeblock.group(0) # get entire match as string
@@ -50,8 +49,6 @@ def hello(markdown = None):
 def preview():
   # get request param
   file = request.args.get('markdown', '')
-  # debug
-  #print("Fetching file " + file)
   # open file and return content
   f = open(file)
   fc = f.read()
@@ -61,25 +58,19 @@ def preview():
   if (len(subs) == 0):
     return fc
   subs = subs[0].replace("```", "")
-  #print("FOUND following:")
   #print(subs)
   lang = re.findall(r"^[a-zA-z]+\s", subs)[0]
   lang = lang[0:(len(lang)-1)]
   lexer = get_lexer_by_name(lang)
   #print(lexer)
   def replace_codeblock(codeblock):
-    #print(codeblock.group(0))
     codeblock = codeblock.group(0) # get entire match as string
     codeblock = re.sub(r"```.*(\s)?", "", codeblock)
-    print("REPLACING")
     return highlight(codeblock, lexer, HtmlFormatter())
 
-  regex = re.compile(r"```[a-zA-z]+\s.*```\s", re.S)
-  print(re.findall(regex, fc))
+  regex = re.compile(r"```[a-zA-Z]+\s.*?```", re.S)
   fc = re.sub(regex, replace_codeblock, fc)
-  #print("DONE!!!")
-  #print(fc)
-
+  
   return fc
 
 if __name__ == "__main__":
