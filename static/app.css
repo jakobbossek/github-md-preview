@@ -1,0 +1,59 @@
+body {
+  margin: 0 auto;
+  padding: 15px;
+  max-width: 1200px;
+  min-width: 380px;
+}
+
+#content {
+  margin-top: 65px;
+}
+
+#markdown_files {
+  margin-top: 20px;
+  margin-left: 15px;
+}
+
+#topbar {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.95);
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+  padding: 0px 10px;
+}
+
+#topbar h1 {
+  color: #fff;
+  border: 0;
+  float: left;
+  padding: 8px 0px;
+}
+
+#topbar #filelist_toggler {
+  float: right;
+  position: relative;
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+  color: #4183c4;
+  display: block;
+  background: rgba(0,0,0,0.6);
+  box-sizing: border-box;
+  padding: 18px;
+  height: 52px;
+}
+
+#topbar ul#markdown_files {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  list-style: none;
+  padding: 10px;
+}

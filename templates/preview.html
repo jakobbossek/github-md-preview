@@ -3,10 +3,12 @@
 <html>
   <head>
     <title>GitHub Markdown preview</title>
-    <link href="{{ url_for('static', filename='github.css') }}" media="screen" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='showdown.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='highlight.js') }}"></script>
+    <link href="{{ url_for('static', filename='github.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='app.css') }}" rel="stylesheet" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='showdown.js') }}"></script>
+    <script src="{{ url_for('static', filename='highlight.js') }}"></script>
+
     <script type="text/javascript">
       $(document).ready(function() {
         var converter = new Showdown.converter();
@@ -38,67 +40,33 @@
           }
           get_file_and_update_preview(elem.html());
         }, 10000);
+
+        $("#filelist_toggler").click(function() {
+          var filelist = $("#markdown_files");
+          filelist.fadeToggle('fast');
+        });
       });
     </script>
-    <style>
-      body {
-        margin: 0 auto;
-        padding: 15px;
-        max-width: 800px;
-      }
 
-      #filelist_form {
-        position: relative;
-        width: 100%;
-      }
-
-      #markdown_filelist_path {
-        padding: 10px 40px 10px 10px;
-        width: 100%;
-        box-sizing: border-box;
-        border-radius: 5px;
-        font-size: 2em;
-        box-shadow: none;
-        border: 1px solid #ddd;
-      }
-
-      #button_load_markdown_files {
-        position: absolute;
-        top: 14px;
-        right: 20px;
-        border-radius: 4px;
-        padding: 2px 3px;
-        background-color: #cecece;
-        color: #fff;
-        font-weight: bold;
-      }
-
-      #markdown_files {
-        margin-top: 20px;
-        margin-left: 15px;
-      }
-
-
-    </style>
   </head>
   <body>
-    <h1>Github markdown preview</h1>
+    <div id="topbar">
+      <h1>Github markdown preview</h1>
+      <span id="filelist_toggler">
+        Show/hide filelist
+        <ul id="markdown_files">
+          {% for file in file_list %}
+          <li><a href="{{file}}" title="{{file}}">{{file}}</a></li>
+          {% endfor %}
+        </ul>
+      </span>
+
+    </div>
     <hr>
 
-    <ul id="markdown_files">
-      {% for file in file_list %}
-      <li><a href="{{file}}">{{file}}</a></li>
-      {% endfor %}
-    </ul>
+    <div id="content">
+      <div id="markdown-preview" class="wikistyle content-body markdown-body">
 
-    <div id="content" class="site">
-      <div id="preview-container">
-        <h2>Preview</h2>
-        <div id="readme" class="announce md" data-path="/">
-          <div id="markdown-preview" class="wikistyle content-body markdown-body">
-          
-          </div>
-        </div>
       </div>
     </div>
   </body>
