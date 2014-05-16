@@ -10,53 +10,20 @@ app.debug = False
 
 # get all the markdown files located in the working directory
 # and all subdirectories
-file_list = {}
-for root, dirs, files in os.walk("."):
-  for file in files:
-    if (file.endswith(".md") or file.endswith(".markdown")):
-      route = os.path.join(root, file)
-      file_list[route] = os.path.abspath(route)
-      print(os.path.abspath(file))
+def getMarkdownFiles(source_dir = "."):
+  file_list = {}
+  for root, dirs, files in os.walk(source_dir):
+    for file in files:
+      if (file.endswith(".md") or file.endswith(".markdown")):
+        route = os.path.join(root, file)[2:]
+        file_list[route] = os.path.abspath(route)
+  return file_list
 
-# def replace_codeblock(codeblock):
-#   #print(codeblock.group(0))
-#   codeblock = codeblock.group(0) # get entire match as string
-#   codeblock = re.sub(r"```.+(\s)?", "", codeblock)
-#   print("REPLACING")
-#   return highlight(codeblock, lexer, HtmlFormatter())
-
-
-# f = open("README.md")
-# fc = f.read()
-# subs = re.findall(r"```[a-zA-z]+\s.*```", fc, re.S)
-# subs = subs[0].replace("```", "")
-# print(subs)
-# lang = re.findall(r"^[a-zA-z]+\s", subs)[0]
-# lang = lang[0:(len(lang)-1)]
-# lexer = get_lexer_by_name(lang)
-# regex = re.compile(r"```[a-zA-z]+\s.*```", re.S)
-# fc = re.sub(regex, replace_codeblock, fc)
-# print("DONE!!!")
-# print(fc)
-
-
-@app.route('/')
-@app.route('/<markdown>')
-def hello(markdown = None):
-  return render_template('preview.html', name = "Jakob", file_list = file_list)
-
-@app.route('/preview')
-def preview():
-  # get request param
-  file = request.args.get('markdown', '')
-  # open file and return content
-  f = open(file)
-  fc = f.read()
-
+def highlight_codeblocks(sourcecode):
   #FIXME: this is so unbelievably ugly
-  subs = re.findall(r"```[a-zA-z]+\s.*```", fc, re.S)
+  subs = re.findall(r"```[a-zA-z]+\s.*```", sourcecode, re.S)
   if (len(subs) == 0):
-    return fc
+    return sourcecode
   subs = subs[0].replace("```", "")
   #print(subs)
   lang = re.findall(r"^[a-zA-z]+\s", subs)[0]
@@ -69,9 +36,26 @@ def preview():
     return highlight(codeblock, lexer, HtmlFormatter())
 
   regex = re.compile(r"```[a-zA-Z]+\s.*?```", re.S)
-  fc = re.sub(regex, replace_codeblock, fc)
-  
-  return fc
+  sourcecode = re.sub(regex, replace_codeblock, sourcecode)
+  return sourcecode
+
+@app.route('/')
+def hello(markdown = None):
+  file_list = getMarkdownFiles()
+  return render_template('preview.html', file_list = file_list)
+
+@app.route('/preview')
+def preview():
+  # get request param
+  file = request.args.get('markdown', '')
+  # open file and return content
+  f = open(file)
+  fc = f.read()
+
+  # pygmentize source code blocks
+  result = highlight_codeblocks(fc)
+
+  return result
 
 if __name__ == "__main__":
     app.run()
